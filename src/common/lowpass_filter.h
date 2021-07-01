@@ -20,6 +20,8 @@ public:
     float operator() (float x);
     float Tf; //!< Low pass filter time constant
 
+    float value() const {return y_prev;}
+
 protected:
     unsigned long timestamp_prev;  //!< Last execution timestamp
     float y_prev; //!< filtered value in previous execution step 
