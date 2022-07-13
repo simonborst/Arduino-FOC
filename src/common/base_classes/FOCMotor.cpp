@@ -56,17 +56,21 @@ void FOCMotor::linkCurrentSense(CurrentSense* _current_sense) {
   current_sense = _current_sense;
 }
 
+void FOCMotor::linkBEMF(BackEMF* _back_emf) {
+  back_emf = _back_emf;
+}
+
 // shaft angle calculation
 float FOCMotor::shaftAngle() {
   // if no sensor linked return previous value ( for open loop )
   if(!sensor) return shaft_angle;
-  return sensor_direction*LPF_angle(sensor->getAngle()) - sensor_offset;
+  return LPF_angle(sensor_direction*sensor->getAngle()) - sensor_offset;
 }
 // shaft velocity calculation
 float FOCMotor::shaftVelocity() {
   // if no sensor linked return previous value ( for open loop )
   if(!sensor) return shaft_velocity;
-  return sensor_direction*LPF_velocity(sensor->getVelocity());
+  return LPF_velocity(sensor_direction*sensor->getVelocity());
 }
 
 float FOCMotor::electricalAngle(){

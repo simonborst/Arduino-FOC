@@ -261,8 +261,7 @@ STM32DriverParams* _initHardware6PWMPair(long PWM_freq, float dead_zone, PinMap*
   if (HardwareTimer_Handle[index] == NULL) {
     HardwareTimer_Handle[index]->__this = new HardwareTimer((TIM_TypeDef*)pinH->peripheral);
     HardwareTimer_Handle[index]->handle.Init.CounterMode = TIM_COUNTERMODE_CENTERALIGNED3;
-    HardwareTimer_Handle[index]->handle.Init.RepetitionCounter = 1;
-    // HardwareTimer_Handle[index]->handle.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_ENABLE; 
+    HardwareTimer_Handle[index]->handle.Init.RepetitionCounter = 0;
     HAL_TIM_Base_Init(&(HardwareTimer_Handle[index]->handle));
     ((HardwareTimer *)HardwareTimer_Handle[index]->__this)->setOverflow((uint32_t)PWM_freq, HERTZ_FORMAT);
   }
@@ -285,9 +284,6 @@ STM32DriverParams* _initHardware6PWMPair(long PWM_freq, float dead_zone, PinMap*
   params->channels[paramsPos+1] = channel2;
   return params;
 }
-
-
-
 
 STM32DriverParams* _initHardware6PWMInterface(long PWM_freq, float dead_zone, PinMap* pinA_h, PinMap* pinA_l, PinMap* pinB_h, PinMap* pinB_l, PinMap* pinC_h, PinMap* pinC_l) {
   STM32DriverParams* params = new STM32DriverParams {
