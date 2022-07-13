@@ -5,6 +5,7 @@
 #include "Sensor.h"
 #include "CurrentSense.h"
 #include "back_emf/BackEmf.h"
+#include "anti_cogging/AntiCogging.h"
 
 #include "../time_utils.h"
 #include "../foc_utils.h"
@@ -104,6 +105,11 @@ class FOCMotor
      * TODO docs
      */
     void linkBEMF(BackEMF* back_emf);
+
+    /**
+     * TODO docs
+     */
+    void linkAntiCogging(AntiCogging* anti_cogging);
 
     /**
      * Function initializing FOC algorithm
@@ -236,6 +242,10 @@ class FOCMotor
       * backemf link
     */
     BackEMF* back_emf; 
+    /** 
+      * anti cogging link
+    */
+    AntiCogging* anti_cogging; 
 
     // monitoring functions
     Print* monitor_port; //!< Serial terminal variable if provided

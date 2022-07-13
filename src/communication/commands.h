@@ -23,6 +23,20 @@
  #define CMD_VERBOSE '@' //!< command setting output mode - only for commander
  #define CMD_DECIMAL '#' //!< command setting decimal places - only for commander
 
+ // anti cogging
+ #define CMD_ANTICOG 'N'
+
+#define SCMD_ANTICOG_OFF '0'
+#define SCMD_ANTICOG_POS '1'
+#define SCMD_ANTICOG_VEL '2'
+#define SCMD_ANTICOG_PARAMETERIZED '3'
+#define SCMD_ANTICOG_HANDTUNED '4'
+
+#define SCMD_ANTICOG_FREQ 'F'
+#define SCMD_ANTICOG_PHASE 'P'
+#define SCMD_ANTICOG_AMP 'A'
+
+
  // subcomands
  //pid - lpf
  #define SCMD_PID_P     'P' //!< PID gain P

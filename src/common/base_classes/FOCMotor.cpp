@@ -60,6 +60,10 @@ void FOCMotor::linkBEMF(BackEMF* _back_emf) {
   back_emf = _back_emf;
 }
 
+void FOCMotor::linkAntiCogging(AntiCogging* _anti_cogging) {
+  anti_cogging = _anti_cogging;
+}
+
 // shaft angle calculation
 float FOCMotor::shaftAngle() {
   // if no sensor linked return previous value ( for open loop )

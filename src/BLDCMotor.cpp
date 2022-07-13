@@ -368,6 +368,10 @@ void BLDCMotor::move(float new_target) {
         voltage.d = 0;
       }else{
         current_sp = target; // if current/foc_current torque control
+
+        if (anti_cogging) {
+          current_sp += anti_cogging->holding_torque_at_angle(shaftAngle());
+        }
       }
       break;
     case MotionControlType::angle:
@@ -380,6 +384,13 @@ void BLDCMotor::move(float new_target) {
       shaft_velocity_sp = P_angle( shaft_angle_sp - shaft_angle );
       // calculate the torque command - sensor precision: this calculation is ok, but based on bad value from previous calculation
       current_sp = PID_velocity(shaft_velocity_sp - shaft_velocity); // if voltage torque control
+
+      if (anti_cogging) {
+        current_sp += anti_cogging->holding_torque_at_angle(shaftAngle());
+      }
+
+
+
       // if torque controlled through voltage
       if(torque_controller == TorqueControlType::voltage){
         // use voltage if phase-resistance not provided
@@ -393,6 +404,12 @@ void BLDCMotor::move(float new_target) {
       shaft_velocity_sp = target;
       // calculate the torque command
       current_sp = PID_velocity(shaft_velocity_sp - shaft_velocity); // if current/foc_current torque control
+
+      if (anti_cogging) {
+        float a = sensor_direction*sensor->getMechanicalAngle() - sensor_offset;
+        current_sp += anti_cogging->holding_torque_at_angle(a);
+      }
+
       // if torque controlled through voltage control
       if(torque_controller == TorqueControlType::voltage){
         // use voltage if phase-resistance not provided

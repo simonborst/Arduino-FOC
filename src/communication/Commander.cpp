@@ -248,6 +248,52 @@ void Commander::motor(FOCMotor* motor, char* user_command) {
           break;
        }
       break;
+    case CMD_ANTICOG:
+      printVerbose(F("anticog:"));
+      switch(sub_cmd){
+        case SCMD_ANTICOG_OFF:
+          printVerbose(F("off"));
+          println("");
+          if(!GET && motor->anti_cogging) motor->anti_cogging->type = AntiCoggingType::None;
+          break;
+        case SCMD_ANTICOG_POS:
+          printVerbose(F("pos"));
+          println("");
+          if(!GET && motor->anti_cogging) motor->anti_cogging->type = AntiCoggingType::Position;
+          break;
+        case SCMD_ANTICOG_VEL:
+          printVerbose(F("vel"));
+          println("");
+          if(!GET && motor->anti_cogging) motor->anti_cogging->type = AntiCoggingType::Velocity;
+          break;
+        case SCMD_ANTICOG_PARAMETERIZED:
+          printVerbose(F("param"));
+          println("");
+          if(!GET && motor->anti_cogging) motor->anti_cogging->type = AntiCoggingType::Parameterized;
+          break;
+        case SCMD_ANTICOG_HANDTUNED:
+          printVerbose(F("tuned"));
+          println("");
+          if(!GET && motor->anti_cogging) motor->anti_cogging->type = AntiCoggingType::HandTuned;
+          break;
+
+        case SCMD_ANTICOG_FREQ:
+          printVerbose(F("freq:"));
+          println(value);
+          if(!GET && motor->anti_cogging) {motor->anti_cogging->freq = value; motor->anti_cogging->update_params();}
+          break;
+        case SCMD_ANTICOG_PHASE:
+          printVerbose(F("phase:"));
+          println(value);
+          if(!GET && motor->anti_cogging) {motor->anti_cogging->offset = value; motor->anti_cogging->update_params();}
+          break;
+        case SCMD_ANTICOG_AMP:
+          printVerbose(F("amp:"));
+          println(value);
+          if(!GET && motor->anti_cogging) {motor->anti_cogging->amp = value; motor->anti_cogging->update_params();}
+          break;
+      }
+      break;
     case CMD_MONITOR:     // get current values of the state variables
       printVerbose(F("Monitor | "));
       switch (sub_cmd){

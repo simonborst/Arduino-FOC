@@ -116,5 +116,6 @@ void loop() {
 #include "communication/StepDirListener.h"
 #include "communication/SimpleFOCDebug.h"
 #include "back_emf/BackEmf.h"
+#include "anti_cogging/AntiCogging.h"
 
 #endif
