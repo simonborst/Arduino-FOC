@@ -7,10 +7,10 @@
 #include "../stm32_mcu.h"
 #include "../../../../drivers/hardware_specific/stm32_mcu.h"
 
-#define _ADC_VOLTAGE 3.3f
-#define _ADC_RESOLUTION 4096.0f
-#define ADC_BUF_LEN_1 2
-#define ADC_BUF_LEN_2 1
+#define _ADC_VOLTAGE 3.3
+#define _ADC_RESOLUTION 4096.0
+#define ADC_BUF_LEN_1 2*2
+#define ADC_BUF_LEN_2 4*2
 
 static ADC_HandleTypeDef hadc1;
 static ADC_HandleTypeDef hadc2;
@@ -24,18 +24,36 @@ static DMA_HandleTypeDef hdma_adc2;
 uint16_t adcBuffer1[ADC_BUF_LEN_1] = {0}; // Buffer for store the results of the ADC conversion
 uint16_t adcBuffer2[ADC_BUF_LEN_2] = {0}; // Buffer for store the results of the ADC conversion
 
+uint16_t *adcBuffer1Peak = adcBuffer1; // aligns with the peak of TIM1 pwm
+uint16_t *adcBuffer2Peak = adcBuffer2;
+uint16_t *adcBuffer1Trough = adcBuffer1 + ADC_BUF_LEN_1 / 2; // aligns with the trough of TIM1 pwm
+uint16_t *adcBuffer2Trough = adcBuffer2 + ADC_BUF_LEN_2 / 2;
+
+#define _ADC_CONV ( (_ADC_VOLTAGE) / (_ADC_RESOLUTION) )
+
 // function reading an ADC value and returning the read voltage
 // As DMA is being used just return the DMA result
 float _readADCVoltageInline(const int pin, const void* cs_params){
   uint32_t raw_adc = 0;
   if(pin == PA2)  // = ADC1_IN3 = phase U (OP1_OUT) on B-G431B-ESC1
-    raw_adc = adcBuffer1[1];
+    raw_adc = adcBuffer1Peak[1];
   else if(pin == PA6) // = ADC2_IN3 = phase V (OP2_OUT) on B-G431B-ESC1
-    raw_adc = adcBuffer2[0];
+    raw_adc = adcBuffer2Peak[0];
 #ifdef PB1
   else if(pin == PB1) // = ADC1_IN12 = phase W (OP3_OUT) on B-G431B-ESC1
-    raw_adc = adcBuffer1[0];
+    raw_adc = adcBuffer1Peak[0];
 #endif
+
+  else if(pin == A_BEMF1) {
+    raw_adc = adcBuffer2Peak[1];
+  }
+  else if(pin == A_BEMF2) {
+    raw_adc = adcBuffer2Peak[2];
+  }
+  else if(pin == A_BEMF3) {
+    raw_adc = adcBuffer2Peak[3];
+  }
+
   return raw_adc * ((Stm32CurrentSenseParams*)cs_params)->adc_voltage_conv;
 }
 
@@ -93,6 +111,12 @@ void* _configureADCInline(const void* driver_params, const int pinA,const int pi
   MX_DMA1_Init(&hadc1, &hdma_adc1, DMA1_Channel1, DMA_REQUEST_ADC1);
   MX_DMA1_Init(&hadc2, &hdma_adc2, DMA1_Channel2, DMA_REQUEST_ADC2);
 
+  
+  TIM1->CR1 &= ~TIM_CR1_CEN;
+  // TIM1->CNT = TIM1->ARR;
+  TIM1->CNT = 0;
+
+
   if (HAL_ADC_Start_DMA(&hadc1, (uint32_t*)adcBuffer1, ADC_BUF_LEN_1) != HAL_OK)
   {
     Error_Handler();
@@ -101,6 +125,8 @@ void* _configureADCInline(const void* driver_params, const int pinA,const int pi
   {
     Error_Handler();
   }
+
+  TIM1->CR1 |= TIM_CR1_CEN;
 
   HAL_OPAMP_Start(&hopamp1);
   HAL_OPAMP_Start(&hopamp2);

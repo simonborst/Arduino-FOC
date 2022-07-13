@@ -4,6 +4,7 @@
 #include "Arduino.h"
 #include "Sensor.h"
 #include "CurrentSense.h"
+#include "back_emf/BackEmf.h"
 
 #include "../time_utils.h"
 #include "../foc_utils.h"
@@ -98,6 +99,11 @@ class FOCMotor
      */
     void linkCurrentSense(CurrentSense* current_sense);
 
+
+    /**
+     * TODO docs
+     */
+    void linkBEMF(BackEMF* back_emf);
 
     /**
      * Function initializing FOC algorithm
@@ -226,6 +232,10 @@ class FOCMotor
       * CurrentSense link
     */
     CurrentSense* current_sense; 
+    /** 
+      * backemf link
+    */
+    BackEMF* back_emf; 
 
     // monitoring functions
     Print* monitor_port; //!< Serial terminal variable if provided

@@ -148,6 +148,7 @@ void MX_ADC2_Init(ADC_HandleTypeDef* hadc2)
 
   /* USER CODE END ADC2_Init 0 */
 
+  ADC_MultiModeTypeDef multimode = {0};
   ADC_ChannelConfTypeDef sConfig = {0};
 
   /* USER CODE BEGIN ADC2_Init 1 */
@@ -164,7 +165,7 @@ void MX_ADC2_Init(ADC_HandleTypeDef* hadc2)
   hadc2->Init.EOCSelection = ADC_EOC_SINGLE_CONV;
   hadc2->Init.LowPowerAutoWait = DISABLE;
   hadc2->Init.ContinuousConvMode = DISABLE;
-  hadc2->Init.NbrOfConversion = 1;
+  hadc2->Init.NbrOfConversion = 4;
   hadc2->Init.DiscontinuousConvMode = DISABLE;
   hadc2->Init.ExternalTrigConv = ADC_EXTERNALTRIG_T1_TRGO;
   hadc2->Init.ExternalTrigConvEdge = ADC_EXTERNALTRIGCONVEDGE_RISING;
@@ -190,6 +191,32 @@ void MX_ADC2_Init(ADC_HandleTypeDef* hadc2)
   /* USER CODE BEGIN ADC2_Init 2 */
 
   /* USER CODE END ADC2_Init 2 */
+
+
+  /** Configure Regular Channel 
+  */
+  sConfig.Channel = ADC_CHANNEL_17;  // ADC2_IN17 = PA4 = BEMF1
+  sConfig.Rank = ADC_REGULAR_RANK_2;
+  if (HAL_ADC_ConfigChannel(hadc2, &sConfig) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  /** Configure Regular Channel 
+  */
+  sConfig.Channel = ADC_CHANNEL_5;  // ADC2_IN5 = PC4 = BEMF2
+  sConfig.Rank = ADC_REGULAR_RANK_3;
+  if (HAL_ADC_ConfigChannel(hadc2, &sConfig) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  /** Configure Regular Channel 
+  */
+  sConfig.Channel = ADC_CHANNEL_14;  // ADC12_IN14 = PB11 = BEMF3
+  sConfig.Rank = ADC_REGULAR_RANK_4;
+  if (HAL_ADC_ConfigChannel(hadc2, &sConfig) != HAL_OK)
+  {
+    Error_Handler();
+  }
 
 }
 
