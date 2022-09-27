@@ -123,7 +123,24 @@ double Encoder::getPreciseAngle(){
 int32_t Encoder::getFullRotations(){
   return  pulse_counter / (int)cpr;
 }
+//SIMON ADDED BELOW:
+double Encoder::getPulseCounter(){
+  return pulse_counter;
+}
+/****
+go up to 3999 cpr, the 4000th pulse = 0 of next rotation
+****/
+double Encoder::getAntiCogIndex(){
+  double returnpulse = pulse_counter;
+  while(returnpulse > ((int)cpr-1)){
+    returnpulse = returnpulse - cpr;
+  }
+  while(returnpulse < 0){
+    returnpulse = returnpulse + cpr;
+  }
+  return returnpulse;
 
+}
 
 
 /*

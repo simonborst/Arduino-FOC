@@ -69,6 +69,10 @@ class Encoder: public Sensor{
     int32_t getFullRotations() override;
     virtual void update() override;
 
+    //Simon Added - no overrides here I think because there is no matching function in parent class...
+    double getPulseCounter(); //pulse counter returns the pulse count variable
+    double getAntiCogIndex(); //pulse counter corrected to 0-3999 - for lookup table index on anti cogging
+
     /**
      * returns 0 if it does need search for absolute zero
      * 0 - encoder without index 
