@@ -115,5 +115,6 @@ void loop() {
 #include "communication/Commander.h"
 #include "communication/StepDirListener.h"
 #include "communication/SimpleFOCDebug.h"
+#include "AntiCog.h"
 
 #endif
